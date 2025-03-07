@@ -48,6 +48,9 @@ jobs:
       with:
         key: macos-${{ matrix.image }}-${{ matrix.compiler }}-${{ matrix.config }}
 
+    - name: Setup Ninja
+      uses: ashutoshvarma/setup-ninja@v1.1
+
     - name: Configure
       shell: bash
       run: |
