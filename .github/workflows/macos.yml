@@ -1,4 +1,4 @@
-name: MacOS
+name: macOS
 
 on:
   push:
@@ -25,16 +25,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc, clang]
         config: [Release, Debug]
-        # Can't build with later than macos-13 yet, newton dynamics 3.14 can't handle it.
+        # Don't build with macos-14 yet, newton dynamics 3.14 can't handle it.
         image: [macos-13]
 
     runs-on: ${{ matrix.image }}
 
     env:
-      CC:  ${{ matrix.compiler == 'gcc' && 'gcc' || 'clang'   }}
-      CXX: ${{ matrix.compiler == 'gcc' && 'g++' || 'clang++' }}
       CMAKE_C_COMPILER_LAUNCHER: ccache
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
 
@@ -46,15 +43,12 @@ jobs:
 
     - uses: hendrikmuhs/ccache-action@v1
       with:
-        key: macos-${{ matrix.image }}-${{ matrix.compiler }}-${{ matrix.config }}
-
-    - name: Setup Ninja
-      uses: ashutoshvarma/setup-ninja@v1.1
+        key: macos-${{ matrix.image }}-${{ matrix.config }}
 
     - name: Configure
       shell: bash
       run: |
-        cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DCMAKE_LINK_WHAT_YOU_USE=TRUE
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
 
     - name: Compile Dependencies
       shell: bash
@@ -79,5 +73,5 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: OSP-macOS-${{ matrix.image}}-${{ matrix.config }}-${{ matrix.compiler }}
+        name: OSP-macOS-${{ matrix.image }}-${{ matrix.config }}
         path: build/${{ matrix.config }}
