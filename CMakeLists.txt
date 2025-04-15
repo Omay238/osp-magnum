@@ -148,11 +148,6 @@ ELSEIF(UNIX)
   # use runpath, and use rpath instead.
   IF(NOT APPLE)
     add_link_options(LINKER:--disable-new-dtags)
-  ELSE()
-    # Hopefully fix linking on MacOS
-    set_target_properties(osp-magnum PROPERTIES
-      INSTALL_RPATH "@executable_path/lib"
-    )
   ENDIF()
 ENDIF()
 
